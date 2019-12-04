@@ -1,0 +1,201 @@
+ 
+
+<!-- Toolbar -->
+<div class="toolbar" role="banner">
+  <img
+    width="40"
+    alt="Angular Logo"
+    src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg=="
+  />
+  <span>Task Manager</span>
+    <div class="spacer"></div>
+  
+</div>
+ 
+ <div class="body-cont">
+  <button type="button" class="btn btn-light" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo" (click)="formReset();viewTask=false;isUpdate=false">Add Task</button>
+<button type="button" class="btn btn-light" (click)="viewTasks();">View Task</button>
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">{{isUpdate ? 'Update Task' : 'Add Task'}}</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form [formGroup]="taskForm" >
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label">Recipient:</label>
+              <input type="text"   class="form-control" id="task"  formControlName="task">
+            </div>
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label">Priority: <b>{{priority}}</b></label>
+              
+              <p-slider [(ngModel)]="priority"  [min]="0" [max]="30" class="form-control" id="priority" formControlName="priority"></p-slider>  
+            </div>
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label">Parent Task:</label>
+              <input type="text"  [(ngModel)]="ptask" class="form-control" id="ptask"  formControlName="ptask">
+            </div>
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label">Start Date:</label> <div class="input-group">
+                  <input class="form-control" placeholder="yyyy-mm-dd"
+                         name="dp" [(ngModel)]="startDate" formControlName="startDate" [minDate]="minDate" ngbDatepicker #d1="ngbDatepicker">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary calendar" (click)="d1.toggle()" type="button"></button>
+                  </div>
+                </div>
+              </div>
+            <div class="form-group">
+                <label for="recipient-name" class="col-form-label">End Date:</label>
+              <div class="input-group">
+                <input class="form-control" placeholder="yyyy-mm-dd"
+                       name="dp" [(ngModel)]="endDate" formControlName="endDate" ngbDatepicker #d2="ngbDatepicker">
+                <div class="input-group-append">
+                  <button class="btn btn-outline-secondary calendar" (click)="d2.toggle()" type="button" ></button>
+                </div>
+              </div>
+            </div>
+            
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary"  (click)="formReset()" data-dismiss="modal" #closeBtn>Cancel</button>
+          <button type="submit" class="btn btn-primary"  [disabled]="!taskForm.valid" (click)="savetaskData()">Add Task</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+ 
+ </div>
+<div class="container" *ngIf="!viewTask"> <h2>Click on Add task link to add task Data</h2>  </div>
+ <div class="container" *ngIf="viewTask">
+    <h2>View Task</h2>
+  
+    <form>
+        <div class="row">
+            <div class="col">
+            <div class="col-auto">
+                <label class="sr-only" for="inlineFormInputGroup">Task</label>
+                <div class="input-group mb-2">
+                  <div class="input-group-prepend">
+                    <div class="input-group-text">Task</div>
+                  </div>
+                  <input type="text" [(ngModel)]="searchtask" class="form-control" id="inlineFormInputGroup" placeholder="Task" [ngModelOptions]="{standalone: true}">
+                </div>
+              </div>
+            </div>
+          <div class="col">
+              <div class="col-auto">
+                  <label class="sr-only" for="inlineFormInputGroup">Parent Task</label>
+                  <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                      <div class="input-group-text">Parent Task</div>
+                    </div>
+                    <input type="text" [(ngModel)]="searchptask" class="form-control" id="inlineFormInputGroup" placeholder="Parent Task" [ngModelOptions]="{standalone: true}">
+                  </div>
+                </div> </div>
+              </div>
+                <div class="row">
+                  <div class="col">
+                      <div class="col-auto">
+                          <label class="sr-only" for="inlineFormInputGroup">Priority From</label>
+                          <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                              <div class="input-group-text">Priority From</div>
+                            </div>
+                            <input type="number" [(ngModel)]="frompriority" min="0"  class="form-control" max="30"  id="inlineFormInputGroup" placeholder="Priority From" [ngModelOptions]="{standalone: true}">
+                          </div>
+                        </div>
+                  </div>
+                  <div class="col">
+                      <div class="col-auto">
+                          <label class="sr-only" for="inlineFormInputGroup">Priority To</label>
+                          <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                              <div class="input-group-text">Priority To</div>
+                            </div>
+                            <input type="number" class="form-control" min="0"  [(ngModel)]="topriority"  max="30"  id="inlineFormInputGroup" placeholder="Priority To" [ngModelOptions]="{standalone: true}">
+                          </div>
+                        </div>
+                  </div>
+
+                  <div class="col">
+                      <div class="col-auto">
+                          <label class="sr-only" for="inlineFormInputGroup">Start Date</label>
+                          <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                              <div class="input-group-text">Start Date</div>
+                            </div>
+                            <input class="form-control" placeholder="yyyy-mm-dd"
+                            name="dp" [(ngModel)]="startDateText"  [minDate]="minDate" ngbDatepicker #df1="ngbDatepicker" [ngModelOptions]="{standalone: true}">
+                     <div class="input-group-append">
+                       <button class="btn btn-outline-secondary calendar" id="inlineFormInputGroup" (click)="df1.toggle()" type="button" ></button>
+                     </div>  </div>
+                        </div>
+                  </div>
+                  <div class="col">
+                      <div class="col-auto">
+                          <label class="sr-only" for="inlineFormInputGroup">End Date</label>
+                          <div class="input-group mb-2">
+                            <div class="input-group-prepend">
+                              <div class="input-group-text">End Date</div>
+                            </div>
+                            <input class="form-control" placeholder="yyyy-mm-dd"
+                            name="dp" [(ngModel)]="endDateText"  [minDate]="minDate" ngbDatepicker #df2="ngbDatepicker" [ngModelOptions]="{standalone: true}">
+                     <div class="input-group-append">
+                       <button class="btn btn-outline-secondary calendar" id="inlineFormInputGroup" (click)="df2.toggle()" type="button"></button>
+                     </div>  </div>
+                        </div>
+                  </div>
+                </div>
+        
+      </form>
+          
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>Task</th>
+          <th>Parent</th>
+          <th>Priority</th>
+          <th>Start Date</th>
+          <th>End Date</th>
+          <th></th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody *ngFor="let task of tasks | filterdata:'task': searchtask | filterdata:'parentTask': searchptask | priorityfilter:'priority': frompriority :topriority | datefilter:'startDate' : 'endDate': startDateText :endDateText">
+        <tr>
+          <td><div class="card">
+              <div class="card-body">
+                <p class="card-text">{{task.task}}</p>
+              
+              </div>
+            </div></td>
+          <td><div class="card">
+              <div class="card-body">
+                <p class="card-text">{{task.parentTask}}</p>
+              
+              </div>
+            </div></td>
+          <td>{{task.priority}}</td>
+          <td>{{task.startDate | date : 'dd/MM/yyyy'}}</td>
+          <td>{{task.endDate | date : 'dd/MM/yyyy'}}</td>
+          <td></td>
+          <td>
+          <p *ngIf="!task.status"><button type="button"  class="btn btn-secondary" data-toggle="modal" data-target="#exampleModal" data-whatever="@mdo" (click)="isUpdate=true">Edit</button>
+          <button type="button" style='margin-right:16px' class="btn btn-secondary" (click)="endTask(task.taskId);">End Task</button></p></td>
+        </tr>
+        
+      </tbody>
+    </table>
+  </div>
+  
+  <ngx-spinner></ngx-spinner>
+
+
+
+<router-outlet></router-outlet>
